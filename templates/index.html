@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <title>West-Ops | L'écosystème logistique</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #ffffff; overflow-x: hidden; }
+        
+        /* AURORA BACKGROUND */
+        .aurora-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.25), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.15), transparent 25%);
+            filter: blur(60px);
+        }
+
+        /* GLASS CARD */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.3);
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-5px);
+        }
+
+        /* BOUTON GRADIENT */
+        .btn-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(139, 92, 246, 0.5);
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <div class="aurora-bg"></div>
+
+    <header class="flex justify-between items-center px-8 py-6 z-20 container mx-auto">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <i data-lucide="layers" class="text-white h-6 w-6"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight">WEST-OPS</span>
+        </div>
+        
+        <nav class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
+            <a href="#" class="text-white">Accueil</a>
+            <a href="#solutions" class="hover:text-white transition">Solutions</a>
+            <a href="#" class="hover:text-white transition">À propos</a>
+        </nav>
+
+        <a href="/planner" class="px-5 py-2 bg-white/10 rounded-lg text-sm font-semibold hover:bg-white/20 transition flex items-center gap-2">
+            Connexion <i data-lucide="log-in" class="w-4 h-4"></i>
+        </a>
+    </header>
+
+    <main class="flex-1 container mx-auto px-6 flex flex-col items-center justify-center text-center py-20">
+        
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-bold uppercase tracking-wider mb-8">
+            <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            Le futur de la logistique
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+            Des solutions simples pour <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                une logistique parfaite.
+            </span>
+        </h1>
+
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+            West Ops centralise tous vos outils opérationnels. Planification, gestion d'équipe, analyse de données et intelligence artificielle, au même endroit.
+        </p>
+
+        <div class="flex flex-col md:flex-row gap-4">
+            <a href="/planner" class="btn-gradient px-8 py-4 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-2">
+                Accéder au Planificateur
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+            <a href="#solutions" class="px-8 py-4 rounded-xl text-white font-semibold border border-white/10 hover:bg-white/5 transition flex items-center justify-center gap-2">
+                Découvrir l'écosystème
+            </a>
+        </div>
+
+    </main>
+
+    <section id="solutions" class="container mx-auto px-6 py-24">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Une suite complète d'outils</h2>
+            <p class="text-gray-400">Tout ce dont vous avez besoin pour piloter votre activité.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <a href="/planner" class="glass-card p-8 rounded-3xl group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 bg-green-500/20 text-green-300 text-[10px] font-bold px-2 py-1 rounded-bl-lg">DISPONIBLE</div>
+                <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-6 text-blue-400 group-hover:scale-110 transition-transform">
+                    <i data-lucide="map" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Planificateur Intelligent</h3>
+                <p class="text-sm text-gray-400">Optimisation de tournées, géocodage automatique et export Excel instantané.</p>
+            </a>
+
+            <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
+                <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
+                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6 text-purple-400">
+                    <i data-lucide="bot" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Assistant IA</h3>
+                <p class="text-sm text-gray-400">Un chatbot dédié pour répondre aux questions de vos équipes terrain 24/7.</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
+                <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
+                <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center mb-6 text-pink-400">
+                    <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Dashboard Commercial</h3>
+                <p class="text-sm text-gray-400">Suivez vos KPI, analysez la performance et prenez les bonnes décisions.</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
+                <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
+                <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-6 text-orange-400">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Smart Emails</h3>
+                <p class="text-sm text-gray-400">Génération automatique de mails de prospection et de relance.</p>
+            </div>
+
+             <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
+                <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
+                <div class="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center mb-6 text-teal-400">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Team Manager</h3>
+                <p class="text-sm text-gray-400">Gérez les plannings, les congés et les zones de vos commerciaux.</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
+                <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
+                <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center mb-6 text-indigo-400">
+                    <i data-lucide="target" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Scoring Prospects</h3>
+                <p class="text-sm text-gray-400">Classement intelligent de vos cibles pour prioriser les meilleurs leads.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="border-t border-white/10 py-8 text-center text-gray-500 text-sm mt-auto bg-[#0f172a]/80 backdrop-blur">
+        <p>&copy; 2024 West-Ops. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
