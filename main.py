@@ -7,11 +7,11 @@ from flask import Flask, request, render_template, send_file, flash, redirect, u
 from werkzeug.utils import secure_filename
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
-# On a supprimé l'import de sklearn ici pour économiser la mémoire
 from tqdm import tqdm
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.utils import get_column_letter
+import random # Nouveau: pour simuler le scoring
 
 # -------------------- CONFIG --------------------
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
@@ -23,7 +23,8 @@ MAX_FREE_TRIALS = 2
 # -------------------- FLASK --------------------
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = "super_secret_key_west_ops"
+# CLÉ SECRÈTE À CHANGER LORS DE LA MISE EN PRODUCTION RÉELLE
+app.secret_key = "cle_tres_secrete_pour_west_ops" 
 
 # -------------------- UTILITAIRES --------------------
 def allowed_file(filename):
@@ -68,30 +69,36 @@ def build_full_address(row, mapping):
     return ", ".join(parts)
 
 def geocode_addresses(df, mapping):
-    geolocator = Nominatim(user_agent="west_ops_lite_v1")
-    geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1.1) # Légère pause pour éviter le blocage
+    geolocator = Nominatim(user_agent="west_ops_app_v1_contact_westops@gmail.com")
+    geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1.1) 
+    
     df['full_address'] = df.apply(lambda r: build_full_address(r, mapping), axis=1)
     lat, lon = [], []
-    for addr in tqdm(df['full_address'], desc="Géocodage"):
-        try:
-            loc = geocode(addr)
-            if loc: lat.append(loc.latitude); lon.append(loc.longitude)
-            else: lat.append(None); lon.append(None)
-        except:
+    
+    limit_safety = 50 
+    
+    for i, addr in enumerate(tqdm(df['full_address'], desc="Géocodage")):
+        if i >= limit_safety:
             lat.append(None); lon.append(None)
+            continue
+            
+        try:
+            loc = geocode(addr, timeout=10)
+            if loc: 
+                lat.append(loc.latitude); lon.append(loc.longitude)
+            else: 
+                lat.append(None); lon.append(None)
+        except Exception as e:
+            print(f"Erreur sur {addr}: {e}") 
+            lat.append(None); lon.append(None)
+            
     df['lat'], df['lon'] = lat, lon
     return df.dropna(subset=['lat','lon'])
 
-# --- NOUVELLE FONCTION ULTRA-LÉGÈRE (Remplacement de K-Means) ---
 def cluster_clients(df, max_clients_per_day):
-    # Au lieu de l'IA, on trie géographiquement (par Latitude)
-    # Cela groupe naturellement les clients proches (Nord vs Sud)
     df = df.sort_values(by=['lat'], ascending=False).reset_index(drop=True)
-    
     clusters = []
     num_clusters = max(1, math.ceil(len(df) / max_clients_per_day))
-    
-    # On découpe simplement la liste triée en groupes
     chunk_size = math.ceil(len(df) / num_clusters)
     for i in range(len(df)):
         clusters.append(i // chunk_size)
@@ -161,6 +168,7 @@ def format_excel(df):
     return out
 
 # -------------------- ROUTES --------------------
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -173,13 +181,59 @@ def planner():
     limit_reached = (remaining == 0)
     return render_template('planner.html', remaining=remaining, limit_reached=limit_reached)
 
+
+@app.route('/dashboard')
+def dashboard():
+    data = session.get('planning_data', [])
+    summary = session.get('planning_summary', {'total_clients': 0, 'total_distance': 0})
+    return render_template('dashboard.html', data=data[:50], summary=summary)
+
+
+@app.route('/smart_email')
+def smart_email():
+    planning_data = session.get('planning_data', [])
+    clients = sorted(list(set(p.get('Nom client') for p in planning_data if p.get('Nom client'))))
+    return render_template('smart_email.html', clients=clients)
+
+
+# -------------------- NOUVELLE ROUTE 1 : SCORING PROSPECTS --------------------
+@app.route('/scoring_prospects')
+def scoring_prospects():
+    # Récupère les données brutes
+    data = session.get('planning_data', [])
+    
+    # Simule un scoring pour l'MVP
+    # On ajoute une colonne 'score' basée sur un nombre aléatoire pour simuler l'IA
+    scored_data = []
+    if data:
+        for client in data:
+            # Score de 60 à 100 pour la simulation
+            client_score = random.randint(60, 100)
+            client['Score'] = client_score
+            scored_data.append(client)
+        
+        # Trie les clients par score décroissant
+        scored_data = sorted(scored_data, key=lambda x: x['Score'], reverse=True)
+
+    return render_template('scoring_prospects.html', data=scored_data)
+
+
+# -------------------- NOUVELLE ROUTE 2 : ASSISTANT IA --------------------
+@app.route('/assistant_ia')
+def assistant_ia():
+    # Pas besoin de données pour cette page MVP, juste l'interface
+    return render_template('assistant_ia.html')
+
+
 @app.route('/upload', methods=['POST'])
 def upload():
+    # GESTION DES CRÉDITS (Freemium)
     if 'uploads_count' not in session:
         session['uploads_count'] = 0
     
     if session['uploads_count'] >= MAX_FREE_TRIALS:
-        return redirect(url_for('planner', _anchor='pricing'))
+        flash("Vous avez épuisé vos 2 essais gratuits. Passez à la vitesse supérieure !")
+        return redirect(url_for('planner', _anchor='pricing')) 
 
     min_clients = int(request.form.get('min_clients', 4))
     max_clients = int(request.form.get('max_clients', 6))
@@ -187,7 +241,7 @@ def upload():
     file = request.files.get('file')
 
     if not file or not allowed_file(file.filename):
-        flash("Fichier invalide.")
+        flash("Fichier invalide (seulement .xlsx ou .xls).")
         return redirect(url_for('planner'))
     
     if not start_city:
@@ -203,15 +257,14 @@ def upload():
     df_geo = geocode_addresses(df, mapping)
     
     if df_geo.empty:
-        flash("Impossible de localiser les adresses.")
+        flash("Impossible de localiser les adresses. Vérifiez le format.")
         return redirect(url_for('planner'))
 
-    # Utilisation de la nouvelle fonction légère
     df_clustered = cluster_clients(df_geo, max_clients)
     
     geolocator = Nominatim(user_agent="start_point")
     try:
-        loc = geolocator.geocode(start_city + ", France")
+        loc = geolocator.geocode(start_city + ", France", timeout=10)
     except:
         loc = None
 
@@ -220,9 +273,18 @@ def upload():
         return redirect(url_for('planner'))
     start_coords = (loc.latitude, loc.longitude)
 
+    # Lancement de l'optimisation
     df_plan = plan_tours(df_clustered, start_coords, min_clients, max_clients)
     excel = format_excel(df_plan)
     
+    # --- STOCKAGE DES DONNÉES EN SESSION POUR LE DASHBOARD ET SCORING ---
+    session['planning_data'] = df_plan.to_dict('records')
+    session['planning_summary'] = {
+        'total_clients': len(df_plan),
+        'total_distance': round(df_plan['Distance trajet (km)'].sum(), 2)
+    }
+    # ---------------------------------------------------------------------
+
     session['uploads_count'] += 1
     
     out_name = f"Planning_WestOps_{datetime.datetime.now().strftime('%Y%m%d')}.xlsx"

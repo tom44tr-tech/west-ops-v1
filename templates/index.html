@@ -1,73 +1,8 @@
-<!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <title>West-Ops | L'écosystème logistique</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+{% extends "base.html" %}
 
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #ffffff; overflow-x: hidden; }
-        
-        /* AURORA BACKGROUND */
-        .aurora-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1;
-            background: 
-                radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.25), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.15), transparent 25%);
-            filter: blur(60px);
-        }
+{% block title %}Accueil{% endblock %}
 
-        /* GLASS CARD */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            border-color: rgba(56, 189, 248, 0.3);
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateY(-5px);
-        }
-
-        /* BOUTON GRADIENT */
-        .btn-gradient {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -10px rgba(139, 92, 246, 0.5);
-        }
-    </style>
-</head>
-
-<body class="flex flex-col min-h-screen">
-
-    <div class="aurora-bg"></div>
-
-    <header class="flex justify-between items-center px-8 py-6 z-20 container mx-auto">
-        <div class="flex items-center gap-3">
-            <div class="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <i data-lucide="layers" class="text-white h-6 w-6"></i>
-            </div>
-            <span class="font-bold text-xl tracking-tight">WEST-OPS</span>
-        </div>
-        
-        <nav class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
-            <a href="#" class="text-white">Accueil</a>
-            <a href="#solutions" class="hover:text-white transition">Solutions</a>
-            <a href="#" class="hover:text-white transition">À propos</a>
-        </nav>
-
-        <a href="/planner" class="px-5 py-2 bg-white/10 rounded-lg text-sm font-semibold hover:bg-white/20 transition flex items-center gap-2">
-            Connexion <i data-lucide="log-in" class="w-4 h-4"></i>
-        </a>
-    </header>
-
+{% block content %}
     <main class="flex-1 container mx-auto px-6 flex flex-col items-center justify-center text-center py-20">
         
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-bold uppercase tracking-wider mb-8">
@@ -91,8 +26,8 @@
                 Accéder au Planificateur
                 <i data-lucide="arrow-right" class="w-5 h-5"></i>
             </a>
-            <a href="#solutions" class="px-8 py-4 rounded-xl text-white font-semibold border border-white/10 hover:bg-white/5 transition flex items-center justify-center gap-2">
-                Découvrir l'écosystème
+            <a href="#pricing" class="px-8 py-4 rounded-xl text-white font-semibold border border-white/10 hover:bg-white/5 transition flex items-center justify-center gap-2">
+                Voir les Abonnements
             </a>
         </div>
 
@@ -115,34 +50,43 @@
                 <p class="text-sm text-gray-400">Optimisation de tournées, géocodage automatique et export Excel instantané.</p>
             </a>
 
-            <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
-                <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
-                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6 text-purple-400">
-                    <i data-lucide="bot" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">Assistant IA</h3>
-                <p class="text-sm text-gray-400">Un chatbot dédié pour répondre aux questions de vos équipes terrain 24/7.</p>
-            </div>
-
-            <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
-                <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
-                <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center mb-6 text-pink-400">
+            <a href="/dashboard" class="glass-card p-8 rounded-3xl group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 bg-green-500/20 text-green-300 text-[10px] font-bold px-2 py-1 rounded-bl-lg">DISPONIBLE</div>
+                <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center mb-6 text-pink-400 group-hover:scale-110 transition-transform">
                     <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2">Dashboard Commercial</h3>
                 <p class="text-sm text-gray-400">Suivez vos KPI, analysez la performance et prenez les bonnes décisions.</p>
-            </div>
+            </a>
 
-            <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
-                <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
-                <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-6 text-orange-400">
+            <a href="/smart_email" class="glass-card p-8 rounded-3xl group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 bg-green-500/20 text-green-300 text-[10px] font-bold px-2 py-1 rounded-bl-lg">DISPONIBLE</div>
+                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6 text-purple-400 group-hover:scale-110 transition-transform">
                     <i data-lucide="mail" class="w-6 h-6"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-2">Smart Emails</h3>
-                <p class="text-sm text-gray-400">Génération automatique de mails de prospection et de relance.</p>
-            </div>
+                <p class="text-sm text-gray-400">Génération automatique d'e-mails de suivi personnalisés.</p>
+            </a>
+            
+            <a href="/assistant_ia" class="glass-card p-8 rounded-3xl group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 bg-green-500/20 text-green-300 text-[10px] font-bold px-2 py-1 rounded-bl-lg">DISPONIBLE</div>
+                <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-6 text-orange-400 group-hover:scale-110 transition-transform">
+                    <i data-lucide="bot" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Assistant IA</h3>
+                <p class="text-sm text-gray-400">Un chatbot dédié pour répondre aux questions de vos équipes terrain 24/7 (interface simulée pour l'MVP).</p>
+            </a>
 
-             <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
+             <a href="/scoring_prospects" class="glass-card p-8 rounded-3xl group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 bg-green-500/20 text-green-300 text-[10px] font-bold px-2 py-1 rounded-bl-lg">DISPONIBLE</div>
+                <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center mb-6 text-indigo-400 group-hover:scale-110 transition-transform">
+                    <i data-lucide="target" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Scoring Prospects</h3>
+                <p class="text-sm text-gray-400">Classement intelligent de vos cibles pour prioriser les meilleurs leads.</p>
+            </a>
+
+            <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
                 <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
                 <div class="w-12 h-12 bg-teal-500/20 rounded-xl flex items-center justify-center mb-6 text-teal-400">
                     <i data-lucide="users" class="w-6 h-6"></i>
@@ -151,24 +95,37 @@
                 <p class="text-sm text-gray-400">Gérez les plannings, les congés et les zones de vos commerciaux.</p>
             </div>
 
-            <div class="glass-card p-8 rounded-3xl group relative opacity-70 hover:opacity-100">
-                <div class="absolute top-0 right-0 bg-white/10 text-gray-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg">BIENTÔT</div>
-                <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center mb-6 text-indigo-400">
-                    <i data-lucide="target" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-2">Scoring Prospects</h3>
-                <p class="text-sm text-gray-400">Classement intelligent de vos cibles pour prioriser les meilleurs leads.</p>
-            </div>
-
         </div>
     </section>
 
-    <footer class="border-t border-white/10 py-8 text-center text-gray-500 text-sm mt-auto bg-[#0f172a]/80 backdrop-blur">
-        <p>&copy; 2024 West-Ops. Tous droits réservés.</p>
-    </footer>
+    <section id="pricing" class="relative z-10 py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Passez à la <span class="text-blue-400">vitesse supérieure</span></h2>
+                <p class="text-gray-400">Des offres adaptées pour continuer à optimiser vos processus avec l'ensemble de la suite West-Ops.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                <div class="glass-card pricing-card p-8 rounded-3xl flex flex-col relative">
+                    <h3 class="text-xl font-semibold text-gray-300">Individuel</h3>
+                    <div class="my-6"><span class="text-4xl font-bold text-white">2.99€</span><span class="text-gray-500">/mois</span></div>
+                    <ul class="space-y-4 mb-8 flex-1"><li class="flex items-center gap-3 text-sm text-gray-300"><i data-lucide="check" class="text-blue-400 h-5 w-5"></i> Accès 1 Compte</li></ul>
+                    <button class="btn-outline w-full py-3 rounded-xl font-semibold text-white">Choisir Solo</button>
+                </div>
+                <div class="glass-card pricing-card p-8 rounded-3xl flex flex-col relative border-blue-500/50 transform md:-translate-y-4">
+                    <div class="absolute top-0 right-0 bg-blue-600 text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">POPULAIRE</div>
+                    <h3 class="text-xl font-semibold text-blue-300">Entreprise</h3>
+                    <div class="my-6"><span class="text-4xl font-bold text-white">9.99€</span><span class="text-gray-500">/mois</span></div>
+                    <ul class="space-y-4 mb-8 flex-1"><li class="flex items-center gap-3 text-sm text-white font-medium"><i data-lucide="check" class="text-blue-400 h-5 w-5"></i> Jusqu'à 10 Comptes</li><li class="flex items-center gap-3 text-sm text-white font-medium"><i data-lucide="check" class="text-blue-400 h-5 w-5"></i> Accès illimité à toute la suite</li></ul>
+                    <button class="btn-gradient w-full py-3 rounded-xl font-bold text-white shadow-lg shadow-blue-500/25">Choisir Entreprise</button>
+                </div>
+                <div class="glass-card pricing-card p-8 rounded-3xl flex flex-col relative">
+                    <h3 class="text-xl font-semibold text-purple-300">Business VIP</h3>
+                    <div class="my-6"><span class="text-4xl font-bold text-white">14.99€</span><span class="text-gray-500">/mois</span></div>
+                    <ul class="space-y-4 mb-8 flex-1"><li class="flex items-center gap-3 text-sm text-gray-300"><i data-lucide="check" class="text-purple-400 h-5 w-5"></i> Comptes illimités</li></ul>
+                    <button class="btn-outline w-full py-3 rounded-xl font-semibold text-white">Nous contacter</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <script>
-        lucide.createIcons();
-    </script>
-</body>
-</html>
+{% endblock %}

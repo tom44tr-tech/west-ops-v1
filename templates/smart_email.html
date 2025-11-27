@@ -1,0 +1,61 @@
+{% extends "base.html" %} 
+{% block title %}Smart Email IA{% endblock %}
+
+{% block content %}
+
+<main class="flex-1 container mx-auto px-6 py-16 relative z-10 min-h-[90vh]">
+    <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold mb-2">Smart <span class="text-purple-400">Email IA</span></h1>
+        <p class="text-gray-400">Génération instantanée d'e-mails de suivi basés sur la tournée.</p>
+    </div>
+
+    <div class="glass-card p-8 rounded-3xl max-w-2xl mx-auto space-y-6">
+        
+        <form action="#" method="POST" class="space-y-6">
+
+            <div>
+                <label for="client_select" class="block text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Client Cible</label>
+                <select id="client_select" name="client_name" class="custom-input w-full px-4 py-3 rounded-xl text-sm font-medium">
+                    {% if clients %}
+                        {% for client in clients %}
+                            <option value="{{ client }}">{{ client }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option>Aucun client trouvé dans la dernière tournée</option>
+                    {% endif %}
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="email_type" class="block text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Objectif de l'E-mail</label>
+                    <select id="email_type" class="custom-input w-full px-4 py-3 rounded-xl text-sm font-medium">
+                        <option>Suivi Commercial (Post-Visite)</option>
+                        <option>Prise de Rendez-vous</option>
+                        <option>Relance Promotion</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tone" class="block text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Tonalité</label>
+                    <select id="tone" class="custom-input w-full px-4 py-3 rounded-xl text-sm font-medium">
+                        <option>Professionnelle & Directe</option>
+                        <option>Amicale & Décontractée</option>
+                        <option>Urgente</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Contenu Généré par l'IA</label>
+                <textarea rows="8" class="custom-input w-full p-4 rounded-xl text-sm font-medium text-gray-300" placeholder="L'IA va générer ici un e-mail parfait et personnalisé... C'est le futur !"></textarea>
+            </div>
+
+            <button type="submit" class="btn-gradient w-full py-3 rounded-xl text-white font-bold text-lg shadow-lg flex items-center justify-center gap-2 group">
+                <i data-lucide="zap" class="w-5 h-5"></i> Simuler la Génération
+            </button>
+
+        </form>
+    </div>
+</main>
+
+{% endblock %}

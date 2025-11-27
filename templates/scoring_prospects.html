@@ -1,0 +1,54 @@
+{% extends "base.html" %} 
+{% block title %}Scoring Prospects IA{% endblock %}
+
+{% block content %}
+
+<main class="flex-1 container mx-auto px-6 py-16 relative z-10 min-h-[90vh]">
+    <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold mb-2">Scoring <span class="text-indigo-400">Prospects IA</span></h1>
+        <p class="text-gray-400">Priorisez vos leads grâce à l'intelligence artificielle (simulation).</p>
+    </div>
+
+    {% if data %}
+    <div class="glass-card p-6 rounded-2xl overflow-x-auto max-w-6xl mx-auto">
+        <h2 class="text-xl font-bold mb-4">Liste des clients prioritaires</h2>
+        <table class="w-full text-sm text-left text-gray-400">
+            <thead class="text-xs text-gray-200 uppercase bg-white/10">
+                <tr>
+                    <th scope="col" class="py-3 px-6">Priorité</th>
+                    <th scope="col" class="py-3 px-6">Nom Client</th>
+                    <th scope="col" class="py-3 px-6">Ville</th>
+                    <th scope="col" class="py-3 px-6">Score IA (0-100)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr class="border-b border-white/5 hover:bg-white/5 
+                {% if row.Score >= 95 %} bg-green-500/10 {% endif %}">
+                    
+                    <td class="py-4 px-6 font-medium text-white">#{{ loop.index }}</td>
+                    <td class="py-4 px-6">{{ row['Nom client'] }}</td>
+                    <td class="py-4 px-6">{{ row.Ville }}</td>
+                    
+                    <td class="py-4 px-6 font-bold" style="color: 
+                        {% if row.Score >= 90 %}#34D399 /* Vert */
+                        {% elif row.Score >= 80 %}#FBBF24 /* Jaune */
+                        {% else %}#EF4444 /* Rouge */
+                        {% endif %};">
+                        {{ row.Score }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center mt-20">
+        <h2 class="text-2xl font-bold text-gray-300">Aucune donnée trouvée.</h2>
+        <p class="text-gray-500 mt-2">Veuillez d'abord générer une tournée via le <a href="/planner" class="text-blue-400 hover:underline">Planificateur</a> pour obtenir des données à scorer.</p>
+    </div>
+    {% endif %}
+
+</main>
+
+{% endblock %}
