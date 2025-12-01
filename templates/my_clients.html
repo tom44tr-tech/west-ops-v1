@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title %}Mes Clients{% endblock %}
+
+{% block content %}
+<div id="import-loader" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm hidden flex flex-col items-center justify-center">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+    <h2 class="text-2xl font-bold text-white animate-pulse">Importation & Géocodage en cours...</h2>
+    <p class="text-gray-400 mt-2">Veuillez patienter, nous analysons votre fichier.</p>
+</div>
+
+<div id="manual-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg p-8 rounded-2xl border border-white/10 relative transform transition-all scale-100">
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+        
+        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <i data-lucide="user-plus" class="text-blue-400"></i> Ajouter un Client
+        </h2>
+
+        <form method="POST" action="{{ url_for('my_clients') }}" class="space-y-4">
+            <input type="hidden" name="manual_add" value="true">
+            
+            <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Type de contact</label>
+                <select name="type" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-blue-500 outline-none">
+                    <option value="CLIENT">Client Actif</option>
+                    <option value="PROSPECT">Prospect</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Nom de l'établissement</label>
+                <input type="text" name="name" required placeholder="Ex: Le Select" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-blue-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-blue-400 uppercase mb-1">SIRET (Pour alertes Pappers)</label>
+                <input type="text" name="siret" placeholder="14 chiffres" class="w-full bg-white/5 border border-blue-500/30 rounded-lg px-4 py-3 text-white focus:border-blue-500 outline-none placeholder-gray-600">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Adresse</label>
+                <input type="text" name="address" required placeholder="Ex: 10 rue de la Paix" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-blue-500 outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Code Postal</label>
+                    <input type="text" name="zip_code" required placeholder="Ex: 44000" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Ville</label>
+                    <input type="text" name="city" required placeholder="Ex: Nantes" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-blue-500 outline-none">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full py-3 mt-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition shadow-lg shadow-blue-900/50">
+                Enregistrer le client
+            </button>
+        </form>
+    </div>
+</div>
+
+
+<div class="container mx-auto py-8 animate-in fade-in duration-500">
+    
+    <div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+        <div>
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-2">
+                Base de Données
+            </h1>
+            <p class="text-gray-400">Gérez votre portefeuille clients et vos cibles.</p>
+        </div>
+
+        <div class="flex gap-3">
+            <button onclick="openModal()" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition border border-white/10 flex items-center gap-2">
+                <i data-lucide="plus" class="w-5 h-5"></i> Nouveau Client
+            </button>
+
+            <form action="{{ url_for('my_clients') }}" method="post" enctype="multipart/form-data" class="flex gap-2" onsubmit="showLoader()">
+                <div class="relative">
+                    <input type="file" name="file" id="file" class="hidden" onchange="document.getElementById('file-label').innerText = this.files[0].name" required>
+                    <label for="file" id="file-label" class="cursor-pointer px-4 py-3 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl border border-white/10 block w-48 text-center truncate transition">
+                        Choisir Excel...
+                    </label>
+                </div>
+                <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition shadow-lg shadow-blue-900/50 flex items-center gap-2">
+                    <i data-lucide="upload" class="w-5 h-5"></i> Importer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="glass-card p-6 rounded-2xl flex items-center gap-4">
+            <div class="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
+                <i data-lucide="database" class="text-white w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Total Fiches</p>
+                <p class="text-2xl font-black text-white">{{ clients|length + prospects|length }}</p>
+            </div>
+        </div>
+        <div class="glass-card p-6 rounded-2xl flex items-center gap-4 border-l-4 border-blue-500">
+            <div class="h-12 w-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+                <i data-lucide="briefcase" class="text-blue-400 w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-blue-400 text-xs font-bold uppercase tracking-widest">Clients Actifs</p>
+                <p class="text-2xl font-black text-white">{{ clients|length }}</p>
+            </div>
+        </div>
+        <div class="glass-card p-6 rounded-2xl flex items-center gap-4 border-l-4 border-purple-500">
+            <div class="h-12 w-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+                <i data-lucide="target" class="text-purple-400 w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-purple-400 text-xs font-bold uppercase tracking-widest">Prospects</p>
+                <p class="text-2xl font-black text-white">{{ prospects|length }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card rounded-2xl overflow-hidden border border-white/10">
+        <div class="p-4 bg-white/5 border-b border-white/10 font-bold text-white flex items-center gap-2">
+            <i data-lucide="list" class="w-4 h-4"></i> Liste des Établissements
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-[#0f172a] text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-white/10">
+                        <th class="p-4 w-24">Type</th>
+                        <th class="p-4">Nom de l'établissement</th>
+                        <th class="p-4">Localisation</th>
+                        <th class="p-4">Code Postal</th>
+                        <th class="p-4">SIRET</th>
+                        <th class="p-4 text-right">Statut GPS</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5 text-sm font-medium">
+                    {% for client in clients + prospects %}
+                    <tr class="hover:bg-white/5 transition group">
+                        <td class="p-4">
+                            {% if client.type == 'CLIENT' %}
+                            <span class="px-2 py-1 rounded bg-blue-500/20 text-blue-400 text-[10px] font-bold border border-blue-500/30">CLIENT</span>
+                            {% else %}
+                            <span class="px-2 py-1 rounded bg-purple-500/20 text-purple-400 text-[10px] font-bold border border-purple-500/30">PROSPECT</span>
+                            {% endif %}
+                        </td>
+                        <td class="p-4 text-white font-bold">{{ client.name }}</td>
+                        <td class="p-4 text-gray-400">
+                            <i data-lucide="map-pin" class="inline w-3 h-3 mr-1 text-gray-600 group-hover:text-blue-400 transition"></i>
+                            {{ client.city }} <span class="text-xs text-gray-600">({{ client.address }})</span>
+                        </td>
+                        <td class="p-4 text-gray-500">{{ client.zip_code }}</td>
+                        <td class="p-4 text-gray-500 font-mono text-xs">{{ client.siret if client.siret else '-' }}</td>
+                        <td class="p-4 text-right">
+                            {% if client.lat %}
+                                <span class="text-emerald-500 text-xs flex items-center justify-end gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Sync</span>
+                            {% else %}
+                                <span class="text-red-500 text-xs flex items-center justify-end gap-1"><i data-lucide="alert-circle" class="w-3 h-3"></i> Erreur</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="p-12 text-center text-gray-500">
+                            Aucune donnée. Commencez par importer un fichier ou ajouter un client.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showLoader() {
+        const fileInput = document.getElementById('file');
+        if(fileInput.files.length > 0) {
+            document.getElementById('import-loader').classList.remove('hidden');
+        }
+    }
+
+    function openModal() {
+        document.getElementById('manual-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('manual-modal').classList.add('hidden');
+    }
+</script>
+{% endblock %}

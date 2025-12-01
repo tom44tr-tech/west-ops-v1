@@ -1,7 +1,12 @@
 flask
+openai
 pandas
 openpyxl
 geopy
 tqdm
 xlrd
 gunicorn
+# --- NOUVEAU POUR LA BASE DE DONNÉES ---
+flask-sqlalchemy
+psycopg2-binary  # Connecteur PostgreSQL
+flask-migrate    # Pour gérer les mises à jour de la structure (migrations)

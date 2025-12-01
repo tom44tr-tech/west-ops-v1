@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Market Radar{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-8 animate-in fade-in duration-500">
+    
+    <div class="mb-8 flex justify-between items-end">
+        <div>
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
+                Market Radar
+            </h1>
+            <p class="text-gray-400">Veille concurrentielle & légale.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('market_radar', refresh='true') }}" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-xs font-bold rounded-lg transition flex items-center gap-2">
+                <i data-lucide="refresh-cw" class="w-3 h-3"></i> Forcer Scan (1 Crédit)
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <div class="glass-card rounded-2xl border border-white/10 overflow-hidden flex flex-col h-[600px]">
+            <div class="p-6 border-b border-white/10 bg-white/5 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="map-pin" class="text-emerald-400"></i> Ouvertures (1 An)
+                    </h2>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">
+                    {{ new_openings|length }}
+                </span>
+            </div>
+            
+            <form action="{{ url_for('save_prospects') }}" method="POST" class="flex-1 flex flex-col overflow-hidden">
+                <div class="overflow-y-auto flex-1 p-4 space-y-3">
+                    {% if new_openings %}
+                        {% for open in new_openings %}
+                        <label class="block group cursor-pointer">
+                            <div class="glass-card p-4 rounded-xl border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition flex gap-4 items-start">
+                                <div class="pt-1">
+                                    <input type="checkbox" name="selected_prospects" value="{{ open.data_value }}" class="w-5 h-5 rounded border-gray-600 text-emerald-500 bg-gray-700 cursor-pointer">
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <h3 class="font-bold text-white group-hover:text-emerald-400 transition">{{ open.name }}</h3>
+                                        <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded text-gray-400">{{ open.date }}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-400 mt-1">{{ open.city }}</p>
+                                    <p class="text-xs text-gray-500 mt-1 truncate">{{ open.address }}</p>
+                                </div>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-12 text-gray-500">Aucune nouvelle ouverture.</div>
+                    {% endif %}
+                </div>
+                <div class="p-4 border-t border-white/10 bg-white/5">
+                    <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition shadow-lg flex justify-center items-center gap-2">
+                        <i data-lucide="user-plus" class="w-5 h-5"></i> Importer en Prospects
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="glass-card rounded-2xl border border-white/10 overflow-hidden flex flex-col h-[600px]">
+            <div class="p-6 border-b border-white/10 bg-white/5 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="alert-triangle" class="text-red-400"></i> Alertes Risques
+                    </h2>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/30">
+                    {{ alerts|length }}
+                </span>
+            </div>
+            
+            <div class="overflow-y-auto flex-1 p-4 space-y-3">
+                {% if alerts %}
+                    {% for alert in alerts %}
+                    <div class="glass-card p-4 rounded-xl border border-l-4 border-white/5 
+                        {% if alert.level == 'danger' %}border-l-red-500 bg-red-500/5{% else %}border-l-orange-500 bg-orange-500/5{% endif %} transition">
+                        <h3 class="font-bold text-white mb-1">{{ alert.name }}</h3>
+                        <p class="text-sm text-gray-300">{{ alert.detail }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-12 text-gray-500">R.A.S.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

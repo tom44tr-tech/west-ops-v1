@@ -1,61 +1,217 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" class="dark">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}West-Ops{% endblock %} | Solutions Logistiques</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>{% block title %}West-Ops{% endblock %}</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* Styles Globaaux et Glassmorphism (Repris de vos versions précédentes) */
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #ffffff; overflow-x: hidden; }
-        .aurora-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; background: radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.25), transparent 25%), radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.15), transparent 25%); filter: blur(60px); }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
-        .glass-card:hover { border-color: rgba(56, 189, 248, 0.3); background: rgba(255, 255, 255, 0.06); transform: translateY(-5px); }
-        .btn-gradient { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); transition: transform 0.2s, box-shadow 0.2s; }
-        .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(139, 92, 246, 0.5); }
-        .custom-input { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: all 0.3s ease; }
-        .custom-input:focus { border-color: #38bdf8; outline: none; box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
-        .file-drop-zone { border: 2px dashed rgba(255, 255, 255, 0.2); transition: all 0.3s; }
-        .file-drop-zone:hover { border-color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
+        /* --- CONFIGURATION GLOBALE --- */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #000000; /* Noir pur pour max contraste */
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #000000 70%);
+        }
+
+        /* --- FOND ANIMÉ (AURORA) - PLUS SOMBRE --- */
+        .aurora-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10;
+            pointer-events: none;
+        }
+
+        .aurora-blob {
+            position: absolute;
+            filter: blur(100px); /* Flou max */
+            opacity: 0.25; /* Opacité réduite pour la lisibilité */
+            animation: float 15s infinite ease-in-out;
+            border-radius: 50%;
+        }
+
+        .blob-1 { top: -20%; left: -10%; width: 60vw; height: 60vw; background: #2563eb; animation-delay: 0s; } /* Bleu profond */
+        .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: #7c3aed; animation-delay: 5s; } /* Violet profond */
+        .blob-3 { top: 30%; left: 30%; width: 40vw; height: 40vw; background: #059669; animation-delay: 8s; } /* Emeraude sombre */
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -60px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        /* --- HEADER FLOTTANT (STYLE APPLE) --- */
+        .floating-nav {
+            background: rgba(10, 10, 10, 0.6); /* Très sombre */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .floating-nav:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(10, 10, 10, 0.8);
+            transform: translateY(2px);
+        }
+
+        /* --- LIENS DU MENU --- */
+        .nav-link {
+            position: relative;
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+        .nav-link:hover { color: white; }
+        .nav-link.active { color: white; background: rgba(255,255,255,0.1); }
+
+        /* --- CARTES (GLASSMORPHISM DARK) --- */
+        .glass-card {
+            background: rgba(0, 0, 0, 0.4); /* Fond noir semi-transparent */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
+<body class="min-h-screen flex flex-col pt-32"> <div class="aurora-container">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
 
-<body class="flex flex-col min-h-screen">
-    <div class="aurora-bg"></div>
+    <header class="fixed top-6 left-0 w-full z-50 flex justify-center px-4">
+        <nav class="floating-nav w-full max-w-5xl px-6 h-16 flex items-center justify-between">
+            
+            <a href="/" class="flex items-center gap-3 hover:opacity-80 transition">
+                <div class="h-9 w-9 bg-white rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                    <i data-lucide="zap" class="text-black h-5 w-5 fill-current"></i>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-white">WEST-OPS</span>
+            </a>
 
-    <header class="flex justify-between items-center px-8 py-6 z-20 container mx-auto relative">
-        <a href="/" class="flex items-center gap-3 hover:opacity-80 transition">
-            <div class="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <i data-lucide="layers" class="text-white h-6 w-6"></i>
+            <div class="hidden md:flex items-center gap-1">
+                <a href="/" class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-white/5 transition">
+                    Accueil
+                </a>
+                
+                {% if user %}
+                    <a href="{{ url_for('my_clients') }}" class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-white/5 transition">
+                        Mes Clients
+                    </a>
+                    <a href="{{ url_for('planner') }}" class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-white/5 transition">
+                        Planificateur
+                    </a>
+                    <a href="{{ url_for('dashboard') }}" class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-white/5 transition">
+                        Dashboard
+                    </a>
+                    <a href="{{ url_for('market_radar') }}" class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-white/5 transition flex items-center gap-2">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                        </span>
+                        Market Tracker
+                    </a>
+                {% endif %}
             </div>
-            <span class="font-bold text-xl tracking-tight">WEST-OPS</span>
-        </a>
-        
-        <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-400">
-            <a href="/" class="hover:text-white transition">Accueil</a>
-            <a href="/planner" class="hover:text-white transition">Planificateur</a>
-            <a href="/dashboard" class="hover:text-white transition">Dashboard</a>
-            <a href="/smart_email" class="hover:text-white transition">Smart Email</a>
-            <a href="/scoring_prospects" class="hover:text-white transition">Scoring</a>
-            <a href="/assistant_ia" class="hover:text-white transition">Assistant IA</a>
-        </nav>
 
-        <a href="/planner" class="px-5 py-2 bg-white/10 rounded-lg text-sm font-semibold hover:bg-white/20 transition flex items-center gap-2">
-            Connexion / Essai <i data-lucide="log-in" class="w-4 h-4"></i>
-        </a>
+            <div class="flex items-center gap-4">
+                {% if user %}
+                    <div class="hidden md:block text-right">
+                        <div class="text-xs font-bold text-white">{{ user.email }}</div>
+                        <div class="text-[10px] text-emerald-400">En ligne</div>
+                    </div>
+                    <a href="{{ url_for('logout') }}" class="h-9 w-9 flex items-center justify-center rounded-full bg-white/5 hover:bg-red-500 hover:text-white text-gray-400 transition border border-white/5">
+                        <i data-lucide="power" class="w-4 h-4"></i>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="text-sm font-medium text-gray-400 hover:text-white transition px-2">Login</a>
+                    <a href="{{ url_for('register') }}" class="px-5 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-gray-200 transition shadow-lg shadow-white/10">
+                        Débuter
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
     </header>
 
-    {% block content %}{% endblock %}
+    <main class="flex-grow container mx-auto px-4 relative z-10">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="max-w-xl mx-auto mb-8">
+                    {% for category, message in messages %}
+                        <div class="glass-card px-6 py-4 rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-500
+                            {% if category == 'error' %}border-l-4 border-red-500{% else %}border-l-4 border-emerald-500{% endif %}">
+                            
+                            {% if category == 'error' %}
+                                <div class="h-8 w-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                                    <i data-lucide="x" class="w-4 h-4 text-red-400"></i>
+                                </div>
+                            {% else %}
+                                <div class="h-8 w-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                                    <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <span class="font-medium text-sm text-gray-200">{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-    <footer class="border-t border-white/10 py-8 text-center text-gray-500 text-sm mt-auto relative z-10 bg-[#0f172a]/80 backdrop-blur">
-        <p>&copy; 2024 West-Ops. Des solutions simples pour une logistique parfaite.</p>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="mt-20 py-8 text-center">
+        <div class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-white/5 border border-white/5 backdrop-blur-sm">
+            <span class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">West-Ops System v2.0</span>
+        </div>
     </footer>
 
     <script>
         lucide.createIcons();
     </script>
+    <script>
+    // Petit script pour animer les boutons quand on clique dessus
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        const btn = form.querySelector('button[type="submit"]');
+        if (btn) {
+            // On sauvegarde le texte original
+            const originalText = btn.innerHTML;
+            // On change le bouton pour montrer que ça bosse
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin inline mr-2"></i> Traitement...`;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            
+            // Si c'est un lien de téléchargement (Excel), on réactive le bouton après 3s
+            if (form.action.includes('generate_tour')) {
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                    lucide.createIcons(); // On recharge les icônes
+                }, 3000);
+            }
+        }
+    });
+</script>
 </body>
 </html>
